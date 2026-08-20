@@ -5,8 +5,14 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 const SAHIP_NICK = 'emir653688643';
+
+// BOTUN ŞİFRESİNİ BURAYA YAZ (Tırnakların arasına)
+const BOT_SIFRE = 'SizinSifreniz123'; 
+// Oyuna ilk defa kayıt olacaksan false, zaten kayıtlıysa true yap
+const IS_REGISTERED = true; 
+
 let chatLogs = [];
 let bot = null;
 
@@ -30,7 +36,7 @@ app.get('/', (req, res) => {
       <h3>🤖 Votex Bot Web Paneli</h3>
       <div id="logs">Yükleniyor...</div>
       <form id="chatForm" class="form-box">
-        <input type="text" id="msg" placeholder="Komut veya mesaj yazın (/login şifre vb.)" required autocomplete="off" />
+        <input type="text" id="msg" placeholder="Komut veya mesaj yazın" required autocomplete="off" />
         <button type="submit">Gönder</button>
       </form>
 
@@ -77,7 +83,8 @@ app.post('/send', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.listen(PORT, () => console.log(`Web sunucu ${PORT} portunda aktif.`));
+// 0.0.0.0 dinleyicisi Render'ın 503 hatasını çözer
+app.listen(PORT, '0.0.0.0', () => console.log(`Web sunucu ${PORT} portunda aktif.`));
 
 function addLog(text) {
   console.log(text);
@@ -95,6 +102,17 @@ function createBot() {
 
   bot.on('spawn', () => {
     addLog('<b>🟢 Bot oyuna girdi!</b>');
+    
+    // Oyuna girer girmez 2 saniye sonra otomatik giriş komutu atar
+    setTimeout(() => {
+      if (IS_REGISTERED) {
+        bot.chat(`/login ${BOT_SIFRE}`);
+        addLog('<b>[OTOMATİK]:</b> /login komutu gönderildi.');
+      } else {
+        bot.chat(`/register ${BOT_SIFRE} ${BOT_SIFRE}`);
+        addLog('<b>[OTOMATİK]:</b> /register komutu gönderildi.');
+      }
+    }, 2000);
   });
 
   bot.on('message', (jsonMsg) => {
