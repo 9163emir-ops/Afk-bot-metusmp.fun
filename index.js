@@ -1,20 +1,18 @@
 const mineflayer = require('mineflayer');
 const express = require('express');
 
-// Render'ın botu kapatmaması için web sunucusu
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('AFK Bot Aktif!'));
 app.listen(PORT, () => console.log(`Web sunucu ${PORT} portunda aktif.`));
 
-// Oyundaki kendi kullanıcı adın
 const SAHIP_NICK = 'emir653688643';
 
 const config = {
   host: 'metusmp.fun',
   port: 25565,
-  username: 'votex', // Oyunculara çaktırmayacak gizli nick
-  version: false
+  username: 'votex',
+  version: '1.21.11' // Sürüm 1.21.11 olarak ayarlandı
 };
 
 function createBot() {
@@ -24,7 +22,6 @@ function createBot() {
     console.log('Bot oyuna girdi!');
   });
 
-  // Oyundan verdiğin komutları çalıştırır (!/t accept vb.)
   bot.on('chat', (username, message) => {
     if (username === SAHIP_NICK && message.startsWith('!')) {
       const komut = message.substring(1);
